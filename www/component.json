@@ -1,0 +1,19 @@
+{
+  "name": "pong-mmo-server",
+  "repo": "bestander/pong-mmo-server",
+  "description": "An online server for HTML5 pong game",
+  "version": "0.1.0",
+  "keywords": [
+    "game",
+    "html5",
+    "canvas",
+    "mmo"
+  ],
+  "dependencies": {
+    "bestander/pong-mmo-client": "*"
+  },
+  "main": "js/index.js",
+  "scripts": [
+    "js/index.js"
+  ]
+}
