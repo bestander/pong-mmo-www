@@ -1,0 +1,71 @@
+@startuml
+
+package "Facebook" {
+  [AUTH]
+  [FRIENDS]
+}
+
+package "Github" {
+  [bestander]
+}
+
+
+package "Heroku Server" {
+
+  [bestander] -- git
+  git -- [PONG-MMO-WWW]
+
+  [NODE.JS] --> [PONG-MMO-WWW]
+
+  note left of git
+    new release is pushed
+    through git repository
+  end note
+
+  note left of [NODE.JS]
+    Node starts
+    PONG-MMO-WWW
+    after git deploy
+  end note
+
+  package PONG-MMO-WWW {
+    [Index.html] --> [AUTH]
+    [Index.html] --> [FRIENDS]
+    [socket.io]
+
+    package BOX2D-PONG {
+      [PongGame] -> [BOX2D-COMMONJS]
+    }
+
+    package PONG-MMO-SERVER {
+      [PongGameSocketSynchronizer] -> [socket.io]
+      [PongGameSocketSynchronizer] <- [PongGame]
+    }
+
+    package PONG-MMO-CLIENT {
+      [CaatRenderer] -> [CAAT]
+      [SocketGameMaster] <- [socket.io]
+      [SocketGameMaster] -> [CaatRenderer]
+      [Player] -> [SocketGameMaster]
+      note right of SocketGameMaster
+        In the future
+        game master implementation
+        can use its' own box2d for
+        network lag compensation
+      end note
+    }
+
+    package BOX2D-COMMONJS {
+    }
+
+    [Index.html] --> [SocketGameMaster]
+  }
+}
+
+
+note right of [Index.html]
+  This web page aggregates all components
+  and is delivered to users
+end note
+
+@enduml
