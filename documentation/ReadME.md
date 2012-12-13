@@ -34,7 +34,7 @@ In essence the game is a client-server application written in JavaScript and dep
 
 The following picture describes the overall architecture.
 
-![Architecutre](pong-all-components.png)
+![Architecutre](./pong-all-components.png)
 
 ## Modules
 
