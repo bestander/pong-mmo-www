@@ -62,8 +62,7 @@ Unlike many others, this tool has a solid scope and common sense behind it, chec
 
 ### Delivering world state updates from server to client sequence diagram
 
-TODO
-
+![Update from server to client](https://raw.github.com/bestander/pong-mmo-www/master/documentation/world-update-sequence.png)
 
 ### Server side sequence diagram
 
