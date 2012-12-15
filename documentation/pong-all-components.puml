@@ -13,23 +13,39 @@ package "Github" {
 package "Heroku Server" {
 
   [bestander] -- git
-  git -- [PONG-MMO-WWW]
-
-  [NODE.JS] --> [PONG-MMO-WWW]
-
+  git - [PONG-MMO-WWW]
 
   package PONG-MMO-WWW {
     [Index.html] --> [AUTH]
     [Index.html] --> [FRIENDS]
     [socket.io]
+    [server.js]
+    [server.js] --> [PONG-MMO-SERVER]
 
-    package BOX2D-PONG {
-      [PongGame] -> [BOX2D-COMMONJS]
-    }
 
     package PONG-MMO-SERVER {
+
+      package BOX2D-PONG {
+
+        [PongGame] -> [BOX2D-COMMONJS]
+
+        package BOX2D-COMMONJS {
+        }
+
+      }
+
       [PongGameSocketSynchronizer] -> [socket.io]
       [PongGameSocketSynchronizer] <- [PongGame]
+
+      note left of [PongGameSocketSynchronizer]
+        Several times a second
+        gets the current game state
+        from PongGame
+        and sends the updates to client
+        using socket.io connection
+      end note
+
+
     }
 
     package PONG-MMO-CLIENT {
@@ -39,8 +55,6 @@ package "Heroku Server" {
       [Player] -> [SocketGameMaster]
     }
 
-    package BOX2D-COMMONJS {
-    }
 
     [Index.html] --> [SocketGameMaster]
 
@@ -49,7 +63,35 @@ package "Heroku Server" {
       done here.
     end note
 
+    note right of [SocketGameMaster]
+      In the future
+      game master implementation
+      can use its own box2d for
+      network lag compensation
+    end note
+
+    note right of [SocketGameMaster]
+      Waits for server messages
+      and orders the renderer
+      to draw changes
+    end note
+
+    note left of [CAAT]
+      All game events are
+      rendered using this engine
+    end note
+
+    note left of [Index.html]
+      This web page aggregates all components
+      and is delivered to users
+    end note
+
+
   }
+
+    [NODE.JS] --> [server.js]
+    [server.js] --> [Index.html]
+
 }
 
 note left of git
@@ -63,9 +105,6 @@ note right of [AUTH]
   Social Networks do the trick
 end note
 
-cloud "dd" {
-
-}
 
 note right of [FRIENDS]
   No lobby is necessary,
@@ -75,41 +114,14 @@ note right of [FRIENDS]
 end note
 
 note left of [NODE.JS]
-  Node starts
-  PONG-MMO-WWW
+  Node.JS executes
+  PONG-MMO-WWW/server.js
   after git deploy
 end note
 
-note left of [CAAT]
-  All game events are
-  rendered using this engine
-end note
 
 
-note right of [SocketGameMaster]
-  In the future
-  game master implementation
-  can use its' own box2d for
-  network lag compensation
-end note
 
-note right of [SocketGameMaster]
-  Waits for server messages
-  and orders the renderer
-  to draw changes
-end note
 
-note right of [Index.html]
-  This web page aggregates all components
-  and is delivered to users
-end note
-
-note left of [PongGameSocketSynchronizer]
-  Several times a second
-  gets the current game state
-  from PongGame
-  and sends the updates to client
-  using socket.io connection
-end note
 
 @enduml
