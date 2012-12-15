@@ -27,7 +27,7 @@ Architecture
 In essence the game is a client-server application written in JavaScript and deployed to cloud PaaS or IaaS.  
 [Node.JS](http://www.nodejs.org) is my platform of choice that provides a lot of flexibility, very strong community of enthusiasts, amazing performance and is extremely lightweight.
 
-- For the time being I chose [heroku](http://www.heroku.com) as a platform because it integrates with [Node](http://www.nodejs.org) and [git](http://www.github.com) seemlessly.
+- For the time being I chose [heroku](http://www.heroku.com) as a hositng platform because it integrates with [Node](http://www.nodejs.org) and [git](http://www.github.com) seemlessly.
 - As a communication layer between client and server I chose [socket.io](http://www.socket.io)
 - For graphics rendering I chose [CAAT](https://github.com/hyperandroid/CAAT) which can render HTML5 graphics using canvas, webGL or CSS3
 - For physics simulation I chose [box2d](http://box2d.org/), the JavaScript port of it may be a performance bottleneck we will do tests
@@ -38,20 +38,53 @@ The following picture describes the overall architecture.
 
 ![Architecutre](https://raw.github.com/bestander/pong-mmo-www/master/documentation/pong-all-components.png)
 
-## Package management
+### Modules
 
-Node.JS has it's own systems for sources and packages management.  
-As for the client side, there is no consensus.  
-Some use [AMD](http://www.requirejs.org), othere use [bower](https://github.com/twitter/bower), most people use good old script tags.  
+The game is split into cohesive modules to allow
 
-But for my projects I decided to use [component](https://github.com/component/component/).  
-[![web component logo](https://component.jit.su/component-badge.svg)](https://github.com/component/component)  
-
-Unlike many others, this tool has a solid scope and common sense behind it, check out the creator's [article](https://github.com/component/component/wiki/F.A.Q).  
+#### Client
 
 
-### Client design
+#### Server
+
+#### Package management
+
+Node.JS has it's own systems for sources and packages management.
+As for the client side, there is no consensus.
+Some use [AMD](http://www.requirejs.org) and [volo](http://volojs.org), othere use [bower](https://github.com/twitter/bower), most people use good old script tags.
+
+But for my projects I decided to use [component](https://github.com/component/component/).
+[![web component logo](https://component.jit.su/component-badge.svg)](https://github.com/component/component)
+
+Unlike many others, this tool has a solid scope and common sense behind it, check out the creator's [article](https://github.com/component/component/wiki/F.A.Q).
+
+### Usage
+
+#### Compilation
+
+#### Deployment
 
 
-### Server design
+License
+----
 
+Copyright 2012 Konstantin Raev (bestander@gmail.com)
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
