@@ -40,12 +40,14 @@ The following picture describes the overall architecture.
 
 ### Modules
 
-The game is split into cohesive modules to allow
+The game is split into many modules to keep things cohesive, small and testable.
 
-#### Client
-
-
-#### Server
+- [pong-mmo-www](https://github.com/bestander/pong-mmo-www) binds everything together, hosts the website and serves assets
+- [pong-mmo-server](https://github.com/bestander/pong-mmo-server) hosts pong-box2d module and synchronizes game state with the client over socket.io protocol stack
+- [pong-mmo-client](https://github.com/bestander/pong-mmo-client) contains rendering and network logic, exchanges commands with pong-mmo-server
+- [pong-box2d](https://github.com/bestander/pong-box2d) pong game implementation using box2dweb-commonjs mod]e, responsible only for ball and paddle game logic
+- [box2dweb-commonjs](https://github.com/bestander/box2dweb-commonjs) a fork of the amazing box2d physics engine port from Actionscript which was ported from C++, supports both client and server environment
+- [CAAT](https://github.com/bestander/CAAT) Canvas Advanced Animation Kit, a fork of a great HTML5 renderer that supports [component](https://github.com/component/component/)
 
 #### Package management
 
@@ -58,11 +60,36 @@ But for my projects I decided to use [component](https://github.com/component/co
 
 Unlike many others, this tool has a solid scope and common sense behind it, check out the creator's [article](https://github.com/component/component/wiki/F.A.Q).
 
-### Usage
+### Delivering world state updates from server to client sequence diagram
 
-#### Compilation
+TODO
 
-#### Deployment
+
+### Server side sequence diagram
+
+TODO
+
+### Server class diagram
+
+TODO
+
+### Client class diagram
+
+TODO
+
+Usage
+----
+
+
+### Compilation
+
+The compiled and minified client sides scripts are stored in git repository.
+If you need a development version for debugging or you want to make changes to the client side use **Makefile** in **www** folder of this project.
+
+### Deployment
+
+See [heroku Node.JS instructions](https://devcenter.heroku.com/articles/nodejs) on how to deploy your own web site with a Pong MMO game.
+All you need is fork the repository and push to heroku upstream.
 
 
 License
