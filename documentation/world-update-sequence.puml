@@ -7,52 +7,64 @@ participant SocketGameMaster
 participant CaatRenderer
 
 
+
 Box2dPongEngine->Box2dPongEngine: tick20
 activate Box2dPongEngine
 deactivate Box2dPongEngine
 
+'socket io laway active
 activate Socket.io
 
+'synchronization tick
 ServerWorldSynchronizer->ServerWorldSynchronizer: tick 14
 activate ServerWorldSynchronizer
 deactivate ServerWorldSynchronizer
 
+'box tick
 Box2dPongEngine->Box2dPongEngine: tick21
 activate Box2dPongEngine
 deactivate Box2dPongEngine
-
+'client rendering tick
 CaatRenderer->CaatRenderer: tick 148
 activate CaatRenderer
 deactivate CaatRenderer
 
+'client rendering tick
 CaatRenderer->CaatRenderer: tick 149
 activate CaatRenderer
 deactivate CaatRenderer
 
+'box tick
 Box2dPongEngine->Box2dPongEngine: tick22
 activate Box2dPongEngine
 deactivate Box2dPongEngine
 
+'client rendering tick
 CaatRenderer->CaatRenderer: tick 150
 activate CaatRenderer
 deactivate CaatRenderer
 
+'client rendering tick
 CaatRenderer->CaatRenderer: tick 151
 activate CaatRenderer
 deactivate CaatRenderer
 
 
+'box tick
 Box2dPongEngine->Box2dPongEngine: tick23
 activate Box2dPongEngine
 deactivate Box2dPongEngine
 
+'synchronization tick
 ServerWorldSynchronizer->ServerWorldSynchronizer: tick 15
 activate ServerWorldSynchronizer
 
+'client rendering tick
 CaatRenderer->CaatRenderer: tick 152
 activate CaatRenderer
 deactivate CaatRenderer
 
+'client rendering tick
 CaatRenderer->CaatRenderer: tick 153
 activate CaatRenderer
 deactivate CaatRenderer
@@ -61,14 +73,17 @@ deactivate CaatRenderer
 ServerWorldSynchronizer->Box2dPongEngine: getWorldPositions
 Box2dPongEngine-->ServerWorldSynchronizer: return world positions as of tick23
 
+'box tick
 Box2dPongEngine->Box2dPongEngine: tick24
 activate Box2dPongEngine
 deactivate Box2dPongEngine
 
+'client rendering tick
 CaatRenderer->CaatRenderer: tick 154
 activate CaatRenderer
 deactivate CaatRenderer
 
+'client rendering tick
 CaatRenderer->CaatRenderer: tick 155
 activate CaatRenderer
 deactivate CaatRenderer
@@ -76,34 +91,40 @@ deactivate CaatRenderer
 
 ServerWorldSynchronizer->Socket.io: send world state \n of box2d tick23 \n at server time
 
+'box tick
 Box2dPongEngine->Box2dPongEngine: tick25
 activate Box2dPongEngine
 deactivate Box2dPongEngine
 
 deactivate ServerWorldSynchronizer
 
+'client rendering tick
 CaatRenderer->CaatRenderer: tick 156
 activate CaatRenderer
 deactivate CaatRenderer
 
+'client rendering tick
 CaatRenderer->CaatRenderer: tick 157
 activate CaatRenderer
 deactivate CaatRenderer
 
 
+'synchronization tick
 ServerWorldSynchronizer->ServerWorldSynchronizer: tick 16
 activate ServerWorldSynchronizer
 deactivate ServerWorldSynchronizer
 
-Socket.io->SocketGameMaster: world state  of server at box2d tick23
+' client update
+Socket.io->SocketGameMaster: world state \n of server \n at box2d tick23
 activate SocketGameMaster
 
-
+'rendering of server info
 loop in all objects
 SocketGameMaster->CaatRenderer: updateObjectPositionAtTime
 end
 deactivate SocketGameMaster
 
+'client rendering tick
 CaatRenderer->CaatRenderer: tick 158
 activate CaatRenderer
 loop in game objects
@@ -114,5 +135,4 @@ deactivate CaatRenderer
 
 CaatRenderer->CaatRenderer: tick 159
 activate CaatRenderer
-
 @enduml

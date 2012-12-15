@@ -15,8 +15,8 @@ This is a purely academic activity with intentions to catch up in the areas of:
 
 and many more.   
 
-I am also looking forward to meeting the performance requirements: how many players a large Amazon EC2 instance will handle while maintaining enjoyable latency.  
-That should be fun to try Node's profiler tools, write benchmark tests and do optimizations.
+I am also looking forward to meeting the performance requirements: how many players a large Amazon EC2 instance will handle while maintaining enjoyable latency.    
+That should be fun to try Node's profiler tools, write benchmark tests and do optimizations.  
 
 
 Architecture
@@ -24,8 +24,8 @@ Architecture
 
 ### Big picture
 
-In essence the game is a client-server application written in JavaScript and deployed to cloud PaaS or IaaS.  
-[Node.JS](http://www.nodejs.org) is my platform of choice that provides a lot of flexibility, very strong community of enthusiasts, amazing performance and is extremely lightweight.
+In essence the game is a client-server application written in JavaScript and deployed to cloud PaaS or IaaS.    
+[Node.JS](http://www.nodejs.org) is my platform of choice that provides a lot of flexibility, very strong community of enthusiasts, amazing performance and is extremely lightweight.  
 
 - For the time being I chose [heroku](http://www.heroku.com) as a hositng platform because it integrates with [Node](http://www.nodejs.org) and [git](http://www.github.com) seemlessly.
 - As a communication layer between client and server I chose [socket.io](http://www.socket.io)
@@ -34,7 +34,7 @@ In essence the game is a client-server application written in JavaScript and dep
 - To spare myself from user management and authentication hassle I decided to integrate with Social Networks like Facebook and Twitter using [placeholder](still choosing tool)
 - And for the actual web page that will host the game I chose [Backbone](http://www.backbonejs.org) MVC framework and [Twitter Bootstrap](http://twitter.github.com/bootstrap/) for layout
 
-The following picture describes the overall architecture.
+The following picture describes the overall architecture.  
 
 ![Architecutre](https://raw.github.com/bestander/pong-mmo-www/master/documentation/pong-all-components.png)
 
@@ -51,30 +51,28 @@ The game is split into many modules to keep things cohesive, small and testable.
 
 #### Package management
 
-Node.JS has it's own systems for sources and packages management.
-As for the client side, there is no consensus.
-Some use [AMD](http://www.requirejs.org) and [volo](http://volojs.org), othere use [bower](https://github.com/twitter/bower), most people use good old script tags.
+Node.JS has it's own systems for sources and packages management.  
+As for the client side, there is no consensus.  
+Some use [AMD](http://www.requirejs.org) and [volo](http://volojs.org), othere use [bower](https://github.com/twitter/bower), most people use good old script tags.  
 
-But for my projects I decided to use [component](https://github.com/component/component/).
+But for my projects I decided to use [component](https://github.com/component/component/).    
 [![web component logo](https://component.jit.su/component-badge.svg)](https://github.com/component/component)
 
-Unlike many others, this tool has a solid scope and common sense behind it, check out the creator's [article](https://github.com/component/component/wiki/F.A.Q).
+Unlike many others, this tool has a solid scope and common sense behind it, check out the creator's [article](https://github.com/component/component/wiki/F.A.Q).  
 
 ### Delivering world state updates from server to client sequence diagram
 
 ![Update from server to client](https://raw.github.com/bestander/pong-mmo-www/master/documentation/world-update-sequence.png)
 
-### Server side sequence diagram
+### Sequence diagram for players joining and game starting
 
 TODO
 
-### Server class diagram
-
-TODO
 
 ### Client class diagram
 
-TODO
+![client classes diagram](https://raw.github.com/bestander/pong-mmo-www/master/documentation/client-classes.png)
+
 
 Usage
 ----
@@ -82,12 +80,12 @@ Usage
 
 ### Compilation
 
-The compiled and minified client sides scripts are stored in git repository.
-If you need a development version for debugging or you want to make changes to the client side use **Makefile** in **www** folder of this project.
+The compiled and minified client sides scripts are stored in git repository.  
+If you need a development version for debugging or you want to make changes to the client side use **Makefile** in **www** folder of this project.  
 
 ### Deployment
 
-See [heroku Node.JS instructions](https://devcenter.heroku.com/articles/nodejs) on how to deploy your own web site with a Pong MMO game.
+See [heroku Node.JS instructions](https://devcenter.heroku.com/articles/nodejs) on how to deploy your own web site with a Pong MMO game.  
 All you need is fork the repository and push to heroku upstream.
 
 

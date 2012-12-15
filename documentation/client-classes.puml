@@ -1,0 +1,36 @@
+@startuml
+
+package main {
+  class GameEventsEmitter
+  
+  interface GameMaster
+  note left: listens to Player's commands \n and notifies Renderer \n about events 
+  class SocketGameMAster --|> GameMaster
+  note left: synchronizes time with server \n listens to server events \n sends player comamnds
+  interface Player
+  note left: issues commands to Game Master 
+  
+  class RealPlayer --|> Player
+  note left: keyboard/touch events
+  
+  interface GameRenderer
+  class CaatGameRenderer
+  CaatGameRenderer --|> GameRenderer
+  
+  GameMaster -- GameEventsEmitter
+  GameEventsEmitter -- GameRenderer
+  GameMaster -- Player
+}
+
+package socket.io {
+  socket -- SocketGameMAster
+}
+
+
+package CAAT {
+  CaatGameRenderer -- Scene
+  CaatGameRenderer -- Director
+}
+
+
+@enduml
