@@ -1,0 +1,105 @@
+@startuml
+title 2 player game creation and disposal in time 
+
+participant webClient2
+participant webClient1
+participant PongMessageHandler
+participant GameLobby
+participant GameSocketSynchronizer
+participant PongGame
+
+GameLobby -> GameLobby: on server boot
+activate GameLobby
+
+webClient1 -> PongMessageHandler: connect
+
+== player 1 joins and creates a game ==
+webClient1 -> PongMessageHandler: emit(startGame)
+PongMessageHandler -> GameLobby: startGame()
+GameLobby -> PongGame: constructor
+activate PongGame
+GameLobby <-- PongGame
+GameLobby -> GameSocketSynchronizer: constructor(pongGame)
+activate GameSocketSynchronizer
+GameLobby <-- GameSocketSynchronizer
+' notify of world change
+GameSocketSynchronizer -> GameSocketSynchronizer: socketNotificationUpdate
+activate GameSocketSynchronizer #FFBBBB
+deactivate GameSocketSynchronizer
+' add first player to synchronizer
+GameLobby --> PongMessageHandler: (game, socketSynchronizer)
+PongMessageHandler -> GameSocketSynchronizer: addSocket(socket1)
+GameSocketSynchronizer -> GameSocketSynchronizer: defineSocketCommandHandlers(socket1)
+GameSocketSynchronizer -> PongGame: playerJoined(1)
+
+' notify of world change
+GameSocketSynchronizer -> GameSocketSynchronizer: socketNotificationUpdate
+activate GameSocketSynchronizer #FFBBBB
+GameSocketSynchronizer -> PongGame: getObjectsPositions
+GameSocketSynchronizer <-- PongGame: array of positions
+loop all sockets
+GameSocketSynchronizer -> PongMessageHandler: emit(worldUpdate)
+end loop
+deactivate GameSocketSynchronizer
+PongMessageHandler -> webClient1: on(worldUpdate)
+
+== player 2 joins player1 game ==
+webClient2 -> PongMessageHandler: connect
+webClient2 -> PongMessageHandler: emit(joinGame, webClient1GameId)
+PongMessageHandler -> GameLobby: getGame(webClient1GameId)
+GameLobby --> PongMessageHandler: (game, socketSynchronizer)
+PongMessageHandler -> GameSocketSynchronizer: addSocket(socket2)
+GameSocketSynchronizer -> PongGame: playerJoined(2)
+PongGame -> GameLobby: gameIsFull(gameId)
+GameSocketSynchronizer -> GameSocketSynchronizer: defineSocketCommandHandlers(socket2)
+
+' notify of world change
+GameSocketSynchronizer -> GameSocketSynchronizer: socketNotificationUpdate
+activate GameSocketSynchronizer #FFBBBB
+GameSocketSynchronizer -> PongGame: getObjectsPositions
+GameSocketSynchronizer <-- PongGame: array of positions
+loop all sockets
+GameSocketSynchronizer -> PongMessageHandler: emit(worldUpdate) 
+end loop
+deactivate GameSocketSynchronizer
+PongMessageHandler -> webClient1: on(worldUpdate)
+PongMessageHandler -> webClient2: on(worldUpdate)
+
+== start match ==
+webClient2 -> PongMessageHandler: emit(ready)
+PongMessageHandler -> GameSocketSynchronizer: onReady(socket2)
+GameSocketSynchronizer -> PongGame: ready(2)
+loop all sockets
+GameSocketSynchronizer -> PongMessageHandler: emit(playerReady, 2)
+end loop
+PongMessageHandler -> webClient1: on(playerReady, 2)
+PongMessageHandler -> webClient2: on(playerReady, 2)
+
+webClient1 -> PongMessageHandler: emit(ready)
+PongMessageHandler -> GameSocketSynchronizer: onReady(socket1)
+GameSocketSynchronizer -> PongGame: ready(1)
+loop all sockets
+GameSocketSynchronizer -> PongMessageHandler: emit(playerReady, 1)
+end loop
+PongMessageHandler -> webClient1: on(playerReady, 1)
+PongMessageHandler -> webClient2: on(playerReady, 1)
+
+== player 1 quits ==
+webClient1 -> PongMessageHandler: disconnect
+PongMessageHandler -> GameSocketSynchronizer: onDisconnect(socket1)
+GameSocketSynchronizer -> GameSocketSynchronizer: removeSocket(socket1)
+GameSocketSynchronizer -> PongGame: playerQuit(1)
+loop all sockets
+GameSocketSynchronizer -> PongMessageHandler: emit(playerQuit, 1)
+end loop
+PongMessageHandler -> webClient2: on(playerReady, 1)
+
+
+== player 2 quits ==
+webClient1 -> PongMessageHandler: disconnect
+PongMessageHandler -> GameSocketSynchronizer: onDisconnect(socket1)
+GameSocketSynchronizer -> GameSocketSynchronizer: removeSocket(socket1)
+GameSocketSynchronizer -> PongGame: playerQuit(1)
+PongGame -> GameLobby: gameIsEmpty(gameId)
+
+@enduml

@@ -66,7 +66,9 @@ Unlike many others, this tool has a solid scope and common sense behind it, chec
 
 ### Sequence diagram for players joining and game starting
 
-TODO
+TODO GameSocketSynchronizer and PongMessageHandler seem to have common concerns this should be redesigned
+
+![server sequence diagram](https://raw.github.com/bestander/pong-mmo-www/master/documentation/players-connect-sequence.png)
 
 
 ### Client class diagram
