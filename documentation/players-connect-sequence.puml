@@ -18,7 +18,7 @@ activate GameLobby
 webClient1 -> PongSocket1: connect
 activate PongSocket1
 
-PongSocket1 -> PongSocket1: defineSocketCommandHandlers()
+PongSocket1 -> PongSocket1: defineHandlers()
 webClient1 -> PongSocket1: emit(startGame)
 PongSocket1 -> GameLobby: getGame()
 GameLobby -> PongGame: constructor
@@ -30,16 +30,16 @@ GameLobby <-- PongGame
 GameLobby -> GameLobby: subscribe to PongGameEventsEmitter \n game lifecycle events
 
 ' game state update
-PongSocket1 -> PongSocket1: socketNotificationUpdate
+PongSocket1 -> PongSocket1: periodicClientUpdate()
 activate PongSocket1 #FFBBBB
 deactivate PongSocket1
 
 GameLobby --> PongSocket1: game
 PongSocket1 -> PongSocket1: subscribe to PongGameEventsEmitter \n game events
-PongSocket1 -> PongGame: playerJoined(1)
+PongSocket1 -> PongGame: joinPlayer(1)
 
 ' game state update
-PongSocket1 -> PongSocket1: socketNotificationUpdate
+PongSocket1 -> PongSocket1: periodicClientUpdate()
 activate PongSocket1 #FFBBBB
 PongSocket1 -> PongGame: getObjectsPositions
 PongSocket1 <-- PongGame: array of positions
@@ -49,23 +49,23 @@ deactivate PongSocket1
 == player 2 joins player1 game ==
 webClient2 -> PongSocket2: connect
 activate PongSocket2
-PongSocket2 -> PongSocket2: defineSocketCommandHandlers()
+PongSocket2 -> PongSocket2: defineHandlers()
 webClient2 -> PongSocket2: emit(joinGame, webClient1GameId)
 PongSocket2 -> GameLobby: getGame(webClient1GameId)
 GameLobby --> PongSocket2: game
-PongSocket2 -> PongGame: playerJoined(2)
+PongSocket2 -> PongGame: joinPlayer(2)
 PongGame --> PongGameEventsEmitter: emit(gameIsFull)
 PongGameEventsEmitter --> GameLobby: on(gameIsFull, game)
 
 ' game state update
-PongSocket1 -> PongSocket1: socketNotificationUpdate
+PongSocket1 -> PongSocket1: periodicClientUpdate()
 activate PongSocket1 #FFBBBB
 PongSocket1 -> PongGame: getObjectsPositions
 PongSocket1 <-- PongGame: array of positions
 PongSocket1 -> webClient1: on(worldUpdate)
 deactivate PongSocket1
 
-PongSocket2 -> PongSocket2: socketNotificationUpdate
+PongSocket2 -> PongSocket2: periodicClientUpdate()
 activate PongSocket2 #FFBBBB
 PongSocket2 -> PongGame: getObjectsPositions
 PongSocket2 <-- PongGame: array of positions
@@ -80,14 +80,14 @@ PongGameEventsEmitter --> PongSocket1: on(playerReady, 2)
 PongGameEventsEmitter --> PongSocket2: on(playerReady, 2)
 
 ' game state update
-PongSocket1 -> PongSocket1: socketNotificationUpdate
+PongSocket1 -> PongSocket1: periodicClientUpdate()
 activate PongSocket1 #FFBBBB
 PongSocket1 -> PongGame: getObjectsPositions
 PongSocket1 <-- PongGame: array of positions
 PongSocket1 -> webClient1: on(worldUpdate, player2Ready)
 deactivate PongSocket1
 
-PongSocket2 -> PongSocket2: socketNotificationUpdate
+PongSocket2 -> PongSocket2: periodicClientUpdate()
 activate PongSocket2 #FFBBBB
 PongSocket2 -> PongGame: getObjectsPositions
 PongSocket2 <-- PongGame: array of positions
@@ -104,14 +104,14 @@ PongGameEventsEmitter --> PongSocket1: on(gameStarted)
 PongGameEventsEmitter --> PongSocket2: on(gameStarted)
 
 ' game state update
-PongSocket1 -> PongSocket1: socketNotificationUpdate
+PongSocket1 -> PongSocket1: periodicClientUpdate()
 activate PongSocket1 #FFBBBB
 PongSocket1 -> PongGame: getObjectsPositions
 PongSocket1 <-- PongGame: array of positions
 PongSocket1 -> webClient1: on(worldUpdate, player1Ready, gameStarted)
 deactivate PongSocket1
 
-PongSocket2 -> PongSocket2: socketNotificationUpdate
+PongSocket2 -> PongSocket2: periodicClientUpdate()
 activate PongSocket2 #FFBBBB
 PongSocket2 -> PongGame: getObjectsPositions
 PongSocket2 <-- PongGame: array of positions
@@ -129,7 +129,7 @@ PongGameEventsEmitter --> GameLobby: on(gameNotFull)
 destroy PongSocket1
 
 ' game state update
-PongSocket2 -> PongSocket2: socketNotificationUpdate
+PongSocket2 -> PongSocket2: periodicClientUpdate()
 activate PongSocket2 #FFBBBB
 PongSocket2 -> PongGame: getObjectsPositions
 PongSocket2 <-- PongGame: array of positions

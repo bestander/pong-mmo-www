@@ -1,7 +1,7 @@
 @startuml
 
 participant Box2dPongEngine
-participant ServerWorldSynchronizer
+participant PongSocket
 participant Socket.io
 participant SocketGameMaster
 participant CaatRenderer
@@ -16,9 +16,9 @@ deactivate Box2dPongEngine
 activate Socket.io
 
 'synchronization tick
-ServerWorldSynchronizer->ServerWorldSynchronizer: tick 14
-activate ServerWorldSynchronizer
-deactivate ServerWorldSynchronizer
+PongSocket->PongSocket: tick 14
+activate PongSocket
+deactivate PongSocket
 
 'box tick
 Box2dPongEngine->Box2dPongEngine: tick21
@@ -56,8 +56,8 @@ activate Box2dPongEngine
 deactivate Box2dPongEngine
 
 'synchronization tick
-ServerWorldSynchronizer->ServerWorldSynchronizer: tick 15
-activate ServerWorldSynchronizer
+PongSocket->PongSocket: tick 15
+activate PongSocket
 
 'client rendering tick
 CaatRenderer->CaatRenderer: tick 152
@@ -70,8 +70,8 @@ activate CaatRenderer
 deactivate CaatRenderer
 
 
-ServerWorldSynchronizer->Box2dPongEngine: getWorldPositions
-Box2dPongEngine-->ServerWorldSynchronizer: return world positions as of tick23
+PongSocket->Box2dPongEngine: getWorldPositions
+Box2dPongEngine-->PongSocket: return world positions as of tick23
 
 'box tick
 Box2dPongEngine->Box2dPongEngine: tick24
@@ -89,14 +89,14 @@ activate CaatRenderer
 deactivate CaatRenderer
 
 
-ServerWorldSynchronizer->Socket.io: send world state \n of box2d tick23 \n at server time
+PongSocket->Socket.io: send world state \n of box2d tick23 \n at server time
 
 'box tick
 Box2dPongEngine->Box2dPongEngine: tick25
 activate Box2dPongEngine
 deactivate Box2dPongEngine
 
-deactivate ServerWorldSynchronizer
+deactivate PongSocket
 
 'client rendering tick
 CaatRenderer->CaatRenderer: tick 156
@@ -110,9 +110,9 @@ deactivate CaatRenderer
 
 
 'synchronization tick
-ServerWorldSynchronizer->ServerWorldSynchronizer: tick 16
-activate ServerWorldSynchronizer
-deactivate ServerWorldSynchronizer
+PongSocket->PongSocket: tick 16
+activate PongSocket
+deactivate PongSocket
 
 ' client update
 Socket.io->SocketGameMaster: world state \n of server \n at box2d tick23

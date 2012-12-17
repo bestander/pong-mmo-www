@@ -1,0 +1,51 @@
+@startuml
+
+class socket_io <|- PongSocket
+class PongSocket {
+  -defineHandlers()
+  -periodicClientUpdate()
+  -subscribeToGameEvents(emitter)
+  -game
+  -gameEventsEmitter
+}
+
+class socket_io {
+  on()
+  emit()
+  disconnect()
+}
+
+
+class PongGame {
+  -Array box2dObjects
+  -Box2dPackage
+  -Number joinPlayer()
+  -Array getObjectsPositions()
+  PongGameEventsEmitter emitter
+}
+
+class PongGameEventsEmitter --|> EventsEmitter
+
+class EventsEmitter{
+  on()
+  emit()
+}
+
+PongGame *-- PongGameEventsEmitter
+GameLobby *-- PongGameEventsEmitter
+PongSocket *-- PongGameEventsEmitter
+
+PongGame --* PongSocket
+
+class GameLobby {
+  -games
+  -subscribeToGameLifeCycleEvents(emitter)
+}
+GameLobby o-- PongGame
+
+note top of GameLobby: singleton
+note top of PongGame: uses Box2dWeb-CommonJS package
+note right of PongGameEventsEmitter: This class is used by game object to notify \n interested parties in game changes
+
+
+@enduml

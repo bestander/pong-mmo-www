@@ -34,10 +34,10 @@ package "Heroku Server" {
 
       }
 
-      [PongGameSocketSynchronizer] -> [socket.io]
-      [PongGameSocketSynchronizer] <- [PongGame]
+      [PongSocket] -> [socket.io]
+      [PongSocket] <- [PongGame]
 
-      note left of [PongGameSocketSynchronizer]
+      note left of [PongSocket]
         Several times a second
         gets the current game state
         from PongGame
