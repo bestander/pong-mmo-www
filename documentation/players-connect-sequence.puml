@@ -3,103 +3,150 @@ title 2 player game creation and disposal in time
 
 participant webClient2
 participant webClient1
-participant PongMessageHandler
+participant PongSocket1
+participant PongSocket2
 participant GameLobby
-participant GameSocketSynchronizer
 participant PongGame
+participant PongGameEventsEmitter
 
 GameLobby -> GameLobby: on server boot
 activate GameLobby
 
-webClient1 -> PongMessageHandler: connect
 
 == player 1 joins and creates a game ==
-webClient1 -> PongMessageHandler: emit(startGame)
-PongMessageHandler -> GameLobby: startGame()
+
+webClient1 -> PongSocket1: connect
+activate PongSocket1
+
+PongSocket1 -> PongSocket1: defineSocketCommandHandlers()
+webClient1 -> PongSocket1: emit(startGame)
+PongSocket1 -> GameLobby: getGame()
 GameLobby -> PongGame: constructor
 activate PongGame
+PongGame -> PongGameEventsEmitter: constructor
+activate PongGameEventsEmitter
+PongGame <-- PongGameEventsEmitter
 GameLobby <-- PongGame
-GameLobby -> GameSocketSynchronizer: constructor(pongGame)
-activate GameSocketSynchronizer
-GameLobby <-- GameSocketSynchronizer
-' notify of world change
-GameSocketSynchronizer -> GameSocketSynchronizer: socketNotificationUpdate
-activate GameSocketSynchronizer #FFBBBB
-deactivate GameSocketSynchronizer
-' add first player to synchronizer
-GameLobby --> PongMessageHandler: (game, socketSynchronizer)
-PongMessageHandler -> GameSocketSynchronizer: addSocket(socket1)
-GameSocketSynchronizer -> GameSocketSynchronizer: defineSocketCommandHandlers(socket1)
-GameSocketSynchronizer -> PongGame: playerJoined(1)
+GameLobby -> GameLobby: subscribe to PongGameEventsEmitter \n game lifecycle events
 
-' notify of world change
-GameSocketSynchronizer -> GameSocketSynchronizer: socketNotificationUpdate
-activate GameSocketSynchronizer #FFBBBB
-GameSocketSynchronizer -> PongGame: getObjectsPositions
-GameSocketSynchronizer <-- PongGame: array of positions
-loop all sockets
-GameSocketSynchronizer -> PongMessageHandler: emit(worldUpdate)
-end loop
-deactivate GameSocketSynchronizer
-PongMessageHandler -> webClient1: on(worldUpdate)
+' game state update
+PongSocket1 -> PongSocket1: socketNotificationUpdate
+activate PongSocket1 #FFBBBB
+deactivate PongSocket1
+
+GameLobby --> PongSocket1: game
+PongSocket1 -> PongSocket1: subscribe to PongGameEventsEmitter \n game events
+PongSocket1 -> PongGame: playerJoined(1)
+
+' game state update
+PongSocket1 -> PongSocket1: socketNotificationUpdate
+activate PongSocket1 #FFBBBB
+PongSocket1 -> PongGame: getObjectsPositions
+PongSocket1 <-- PongGame: array of positions
+PongSocket1 -> webClient1: on(worldUpdate)
+deactivate PongSocket1
 
 == player 2 joins player1 game ==
-webClient2 -> PongMessageHandler: connect
-webClient2 -> PongMessageHandler: emit(joinGame, webClient1GameId)
-PongMessageHandler -> GameLobby: getGame(webClient1GameId)
-GameLobby --> PongMessageHandler: (game, socketSynchronizer)
-PongMessageHandler -> GameSocketSynchronizer: addSocket(socket2)
-GameSocketSynchronizer -> PongGame: playerJoined(2)
-PongGame -> GameLobby: gameIsFull(gameId)
-GameSocketSynchronizer -> GameSocketSynchronizer: defineSocketCommandHandlers(socket2)
+webClient2 -> PongSocket2: connect
+activate PongSocket2
+PongSocket2 -> PongSocket2: defineSocketCommandHandlers()
+webClient2 -> PongSocket2: emit(joinGame, webClient1GameId)
+PongSocket2 -> GameLobby: getGame(webClient1GameId)
+GameLobby --> PongSocket2: game
+PongSocket2 -> PongGame: playerJoined(2)
+PongGame --> PongGameEventsEmitter: emit(gameIsFull)
+PongGameEventsEmitter --> GameLobby: on(gameIsFull, game)
 
-' notify of world change
-GameSocketSynchronizer -> GameSocketSynchronizer: socketNotificationUpdate
-activate GameSocketSynchronizer #FFBBBB
-GameSocketSynchronizer -> PongGame: getObjectsPositions
-GameSocketSynchronizer <-- PongGame: array of positions
-loop all sockets
-GameSocketSynchronizer -> PongMessageHandler: emit(worldUpdate) 
-end loop
-deactivate GameSocketSynchronizer
-PongMessageHandler -> webClient1: on(worldUpdate)
-PongMessageHandler -> webClient2: on(worldUpdate)
+' game state update
+PongSocket1 -> PongSocket1: socketNotificationUpdate
+activate PongSocket1 #FFBBBB
+PongSocket1 -> PongGame: getObjectsPositions
+PongSocket1 <-- PongGame: array of positions
+PongSocket1 -> webClient1: on(worldUpdate)
+deactivate PongSocket1
+
+PongSocket2 -> PongSocket2: socketNotificationUpdate
+activate PongSocket2 #FFBBBB
+PongSocket2 -> PongGame: getObjectsPositions
+PongSocket2 <-- PongGame: array of positions
+PongSocket2 -> webClient2: on(worldUpdate)
+deactivate PongSocket2
 
 == start match ==
-webClient2 -> PongMessageHandler: emit(ready)
-PongMessageHandler -> GameSocketSynchronizer: onReady(socket2)
-GameSocketSynchronizer -> PongGame: ready(2)
-loop all sockets
-GameSocketSynchronizer -> PongMessageHandler: emit(playerReady, 2)
-end loop
-PongMessageHandler -> webClient1: on(playerReady, 2)
-PongMessageHandler -> webClient2: on(playerReady, 2)
+webClient2 -> PongSocket2: emit(ready)
+PongSocket2 -> PongGame: ready(2)
+PongGame --> PongGameEventsEmitter: emit(playerReady, 2)
+PongGameEventsEmitter --> PongSocket1: on(playerReady, 2)
+PongGameEventsEmitter --> PongSocket2: on(playerReady, 2)
 
-webClient1 -> PongMessageHandler: emit(ready)
-PongMessageHandler -> GameSocketSynchronizer: onReady(socket1)
-GameSocketSynchronizer -> PongGame: ready(1)
-loop all sockets
-GameSocketSynchronizer -> PongMessageHandler: emit(playerReady, 1)
-end loop
-PongMessageHandler -> webClient1: on(playerReady, 1)
-PongMessageHandler -> webClient2: on(playerReady, 1)
+' game state update
+PongSocket1 -> PongSocket1: socketNotificationUpdate
+activate PongSocket1 #FFBBBB
+PongSocket1 -> PongGame: getObjectsPositions
+PongSocket1 <-- PongGame: array of positions
+PongSocket1 -> webClient1: on(worldUpdate, player2Ready)
+deactivate PongSocket1
+
+PongSocket2 -> PongSocket2: socketNotificationUpdate
+activate PongSocket2 #FFBBBB
+PongSocket2 -> PongGame: getObjectsPositions
+PongSocket2 <-- PongGame: array of positions
+PongSocket2 -> webClient2: on(worldUpdate, player2Ready)
+deactivate PongSocket2
+
+webClient1 -> PongSocket1: emit(ready)
+PongSocket1 -> PongGame: ready(2)
+PongGame --> PongGameEventsEmitter: emit(playerReady, 1)
+PongGame --> PongGameEventsEmitter: emit(gameStarted)
+PongGameEventsEmitter --> PongSocket1: on(playerReady, 1)
+PongGameEventsEmitter --> PongSocket2: on(playerReady, 1)
+PongGameEventsEmitter --> PongSocket1: on(gameStarted)
+PongGameEventsEmitter --> PongSocket2: on(gameStarted)
+
+' game state update
+PongSocket1 -> PongSocket1: socketNotificationUpdate
+activate PongSocket1 #FFBBBB
+PongSocket1 -> PongGame: getObjectsPositions
+PongSocket1 <-- PongGame: array of positions
+PongSocket1 -> webClient1: on(worldUpdate, player1Ready, gameStarted)
+deactivate PongSocket1
+
+PongSocket2 -> PongSocket2: socketNotificationUpdate
+activate PongSocket2 #FFBBBB
+PongSocket2 -> PongGame: getObjectsPositions
+PongSocket2 <-- PongGame: array of positions
+PongSocket2 -> webClient2: on(worldUpdate, player1Ready, gameStarted)
+deactivate PongSocket2
+
 
 == player 1 quits ==
-webClient1 -> PongMessageHandler: disconnect
-PongMessageHandler -> GameSocketSynchronizer: onDisconnect(socket1)
-GameSocketSynchronizer -> GameSocketSynchronizer: removeSocket(socket1)
-GameSocketSynchronizer -> PongGame: playerQuit(1)
-loop all sockets
-GameSocketSynchronizer -> PongMessageHandler: emit(playerQuit, 1)
-end loop
-PongMessageHandler -> webClient2: on(playerReady, 1)
+webClient1 -> PongSocket1: disconnect
+PongSocket1 -> PongGame: playerQuit(1)
+PongGame --> PongGameEventsEmitter: emit(playerQuit, 1)
+PongGameEventsEmitter --> PongSocket1: on(playerQuit, 1)
+PongGame --> PongGameEventsEmitter: emit(gameNotFull)
+PongGameEventsEmitter --> GameLobby: on(gameNotFull)
+destroy PongSocket1
 
+' game state update
+PongSocket2 -> PongSocket2: socketNotificationUpdate
+activate PongSocket2 #FFBBBB
+PongSocket2 -> PongGame: getObjectsPositions
+PongSocket2 <-- PongGame: array of positions
+PongSocket2 -> webClient2: on(worldUpdate, playerQuit)
+deactivate PongSocket2
 
 == player 2 quits ==
-webClient1 -> PongMessageHandler: disconnect
-PongMessageHandler -> GameSocketSynchronizer: onDisconnect(socket1)
-GameSocketSynchronizer -> GameSocketSynchronizer: removeSocket(socket1)
-GameSocketSynchronizer -> PongGame: playerQuit(1)
-PongGame -> GameLobby: gameIsEmpty(gameId)
+webClient2 -> PongSocket2: disconnect
+PongSocket2 -> PongGame: playerQuit(2)
+PongGame --> PongGameEventsEmitter: emit(playerQuit, 1)
+PongGame --> PongGameEventsEmitter: emit(gameEmpty)
+destroy PongSocket2
+
+PongGameEventsEmitter --> GameLobby: on(gameEmpty)
+GameLobby -> PongGame: destroy()
+destroy PongGame
+GameLobby -> PongGameEventsEmitter: destroy()
+destroy PongGameEventsEmitter
 
 @enduml
