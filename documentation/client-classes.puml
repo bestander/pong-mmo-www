@@ -5,7 +5,7 @@ package main {
   
   interface GameMaster
   note left: listens to Player's commands \n and notifies Renderer \n about events 
-  class SocketGameMAster --|> GameMaster
+  class SocketGameMaster --|> GameMaster
   note left: synchronizes time with server \n listens to server events \n sends player comamnds
   interface Player
   note left: issues commands to Game Master 
@@ -23,7 +23,7 @@ package main {
 }
 
 package socket.io {
-  socket -- SocketGameMAster
+  socket -- SocketGameMaster
 }
 
 

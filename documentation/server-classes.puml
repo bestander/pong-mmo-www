@@ -1,6 +1,6 @@
 @startuml
 
-class socket_io <|- PongSocket
+class socket_io --* PongSocket
 class PongSocket {
   -defineHandlers()
   -periodicClientUpdate()
@@ -32,7 +32,7 @@ class EventsEmitter{
 }
 
 PongGame *-- PongGameEventsEmitter
-GameLobby *-- PongGameEventsEmitter
+GameLobby o-- PongGameEventsEmitter
 PongSocket *-- PongGameEventsEmitter
 
 PongGame --* PongSocket
