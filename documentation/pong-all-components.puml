@@ -49,34 +49,33 @@ package "Heroku Server" {
     }
 
     package PONG-MMO-CLIENT {
-      [CaatRenderer] -> [CAAT]
-      [SocketGameMaster] <- [socket.io]
-      [SocketGameMaster] -> [CaatRenderer]
-      [Player] -> [SocketGameMaster]
+      [PongGameRenderer] -> [three.js]
+      [SocketGameDriver] <-- [socket.io]
+      [SocketGameDriver] -> [PongGameRenderer]
     }
 
 
-    [Index.html] --> [SocketGameMaster]
+    [Index.html] --> [SocketGameDriver]
 
     note right of [PongGame]
       Ball bounce simulation
       done here.
     end note
 
-    note right of [SocketGameMaster]
+    note right of [SocketGameDriver]
       In the future
       game master implementation
       can use its own box2d for
       network lag compensation
     end note
 
-    note right of [SocketGameMaster]
+    note right of [SocketGameDriver]
       Waits for server messages
       and orders the renderer
       to draw changes
     end note
 
-    note left of [CAAT]
+    note left of [three.js]
       All game events are
       rendered using this engine
     end note
