@@ -1,36 +1,114 @@
 @startuml
 
-package main {
-  class GameEventsEmitter
+package pong-mmo-client {
+  package socket.io {
+    class socket
+  }
+
+  package three.js {
+    class THREE
+  }
   
-  interface GameMaster
-  note left: listens to Player's commands \n and notifies Renderer \n about events 
-  class SocketGameMaster --|> GameMaster
-  note left: synchronizes time with server \n listens to server events \n sends player comamnds
-  interface Player
-  note left: issues commands to Game Master 
+  package pong-single-player {
+    package events {
+      class EventEmitter
+    }
+
+    class PongAi {
+
+    }
+    package pong-box2d{
+      class PongGame {
+        +handlePlayerCommand()
+        +getObjectPositions()
+        +joinPlayer()
+        +quitPlayer()
+        +getEventsEmitter()
+        -_tick()
+      }
+    }
+    package box2dweb {
+      class b2World
+    }
+    PongGame *- b2World
+    PongGame *- EventEmitter
+    PongAi *- EventEmitter
+  }
+
+  package main {
   
-  class RealPlayer --|> Player
-  note left: keyboard/touch events
+    class SocketGameDriver {      
+      +connect(address)
+      ~onServerMessage()
+      ~sendPlayerCommands()
+      -_compensateNetworkLag()
+      -_onPlayerInput()
+    }
+    SocketGameDriver *-- socket
+    note top: dictates the renderer \n what to do \n based on server commands
+    
+    class LocalGameDriver {
+      +start()
+      -_onPlayer1Input()
+      -_onPlayer2Input()
+    }
+    note top: TODO in next release
+    LocalGameDriver *-- PongGame
+    LocalGameDriver *-- EventEmitter
+    LocalGameDriver *- PongGameRenderer
+    
+
+    class PongGameRenderer {
+      +renderGameUpdate()
+      +showScene(params)
+      +addObject()
+      +removeObject()
+    }
+
+    PongGameRenderer *- THREE
+    SocketGameDriver *- PongGameRenderer
+    
+    class UserInputHandler {
+    
+    }
+    UserInputHandler --* SocketGameDriver
+    UserInputHandler --o LocalGameDriver
+  }
+
+  package Box2dTools {
+    class Box2dToCanvas {
+      +parse()
+    }
+  }
+
+  PongGameRenderer *-- Box2dToCanvas
+
+  package AnimationSmoother {
+
+    class ObjectCoordinateInterpolator {
+      {static}+updateAll()
+      +schedulePosition(pos, delayMillis)
+      +onCurrentPositionRequest(callback)
+    }
+    note right: makes sure the \nanimation is smooth: \ninterpolates and delays
+    note bottom: for every moving object in \nPongGameRenderer \nthere is an interpolatior
+  }
+
+  PongGameRenderer o-- ObjectCoordinateInterpolator
+
+  package tween.js {
+    class TWEEN {
+      +to()
+      +start()
+      +update()
+      +onUpdate(callback)
+    }
+  }
+  ObjectCoordinateInterpolator *-- TWEEN
   
-  interface GameRenderer
-  class CaatGameRenderer
-  CaatGameRenderer --|> GameRenderer
-  
-  GameMaster -- GameEventsEmitter
-  GameEventsEmitter -- GameRenderer
-  GameMaster -- Player
 }
 
-package socket.io {
-  socket -- SocketGameMaster
-}
 
-
-package CAAT {
-  CaatGameRenderer -- Scene
-  CaatGameRenderer -- Director
-}
 
 
 @enduml
