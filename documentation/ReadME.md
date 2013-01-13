@@ -34,7 +34,7 @@ In essence the game is a client-server application written in JavaScript and dep
 - To spare myself from user management and authentication hassle I decided to integrate with Social Networks like Facebook and Twitter using [placeholder](still choosing tool)
 - And for the actual web page that will host the game I chose [Backbone](http://www.backbonejs.org) MVC framework and [Twitter Bootstrap](http://twitter.github.com/bootstrap/) for layout
 
-The design built around ability to make a real time network game and those articles were a great help:
+The design is built around ability to make a real time network game and those articles were a great help:
 - [Very good tutorial with must-read articles in references](http://buildnewgames.com/real-time-multiplayer)
 - [A very simple explanation of network communications by Valve](https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking)
 
