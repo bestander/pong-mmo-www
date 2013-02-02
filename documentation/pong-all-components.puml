@@ -50,12 +50,12 @@ package "Heroku Server" {
 
     package PONG-MMO-CLIENT {
       [PongGameRenderer] -> [three.js]
-      [SocketGameDriver] <-- [socket.io]
-      [SocketGameDriver] -> [PongGameRenderer]
+      [ClientBootstrap] <-- [socket.io]
+      [ClientBootstrap] -> [PongGameRenderer]
     }
 
 
-    [Index.html] --> [SocketGameDriver]
+    [Index.html] --> [ClientBootstrap]
 
     note right of [PongGame]
       Ball bounce simulation

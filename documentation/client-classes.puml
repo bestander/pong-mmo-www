@@ -37,51 +37,47 @@ package pong-mmo-client {
 
   package main {
   
-    class SocketGameDriver {      
-      +connect(address)
-      ~onServerMessage()
-      ~sendPlayerCommands()
-      -_compensateNetworkLag()
-      -_onPlayerInput()
+    class ServerTimeSync {
+      -onMatchUpdate()
+      -getClientServerTimeDifference()
+      +pipeTimeRelatedEvents(socket, eventEmitter)
     }
-    SocketGameDriver *-- socket
-    note top: dictates the renderer \n what to do \n based on server commands
+    ServerTimeSync *-- socket
     
-    class LocalGameDriver {
-      +start()
-      -_onPlayer1Input()
-      -_onPlayer2Input()
+    class ClientBootstrap {
+      +initServerGame(socket, domElement)
+      +initLocalGame(PongGame, domElement)
     }
-    note top: TODO in next release
-    LocalGameDriver *-- PongGame
-    LocalGameDriver *-- EventEmitter
-    LocalGameDriver *- PongGameRenderer
+    note bottom: binds a socket.io connection to renderer \n or \n a local pong game event emitter to renderer
+    note right: local game is TODO in next release
     
+    ClientBootstrap *-- PongGame
+    ClientBootstrap *- PongGameRenderer
+    ClientBootstrap *-- socket
+    ServerTimeSync --* ClientBootstrap
+
+    class PlayerCommandsHandler {
+      +movePaddle(direction)
+      +ready()
+    }
+    ClientBootstrap o- PlayerCommandsHandler
 
     class PongGameRenderer {
-      +renderGameUpdate()
-      +showScene(params)
-      +addObject()
-      +removeObject()
+      +onGameEntered()
+      +onPlayerJoined()
+      +onPlayerQuit()
+      +onPlayerReady()
+      +onMatchUpdate()
     }
 
     PongGameRenderer *- THREE
-    SocketGameDriver *- PongGameRenderer
-    
-    class UserInputHandler {
-    
-    }
-    UserInputHandler --* SocketGameDriver
-    UserInputHandler --o LocalGameDriver
-  }
-
-  package Box2dTools {
+        
     class Box2dToCanvas {
-      +parse()
+      +convertCoordinate(box2dCoord, scale)
     }
-  }
+    PongGameRenderer *-- Box2dToCanvas
 
-  PongGameRenderer *-- Box2dToCanvas
+  }
 
   package AnimationSmoother {
 
