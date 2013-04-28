@@ -3,7 +3,9 @@ pong-mmo-www
 
 Pong MMO web site.
 
-The project is in early stage of development, a demo will be ready by New Year 2013.
+Shame on me, the game never reached complete state. 
+Though I've learned a lot, so it is a win for me. 
+
 
 See [documentation](https://github.com/bestander/pong-mmo-www/tree/master/documentation) for details about goals, design and usage.
 
