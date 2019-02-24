@@ -1,5 +1,4 @@
-pong-mmo-www
-============
+# pong-mmo-www
 
 Pong MMO web site.
 
